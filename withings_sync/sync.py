@@ -180,6 +180,7 @@ def generate_fitdata(syncdata):
 
     fit_weight = None
     fit_blood_pressure = None
+    logging.info("%d weight_measurements found", len(weight_measurements))
 
     if len(weight_measurements) > 0:
         fit_weight = FitEncoderWeight()
@@ -480,7 +481,7 @@ def sync():
             if gar_wg_state or gar_bp_state:
                 # Save this sync so we don't re-download the same data again (if no range has been specified)
                 if not ARGS.fromdate:
-                    withings.set_lastsync()
+                    withings.set_lastsync(last_date_time)
         elif ARGS.garmin_username is None:
             logging.info("No Garmin username - skipping sync")
         else:

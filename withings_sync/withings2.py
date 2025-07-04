@@ -202,10 +202,20 @@ class WithingsAccount:
             return int(time.mktime(date.today().timetuple()))
         return self.withings.user_config["last_sync"]
 
-    def set_lastsync(self):
+    def set_lastsync(self, ts=None):
         """set last sync timestamp"""
-        self.withings.user_config["last_sync"] = int(time.time())
-        log.info("Saving Last Sync")
+
+        if type(ts) is time:
+            ts = ts + 60 # ts is ok
+        elif type(ts) is datetime:
+            ts = datetime.timestamp(ts) + 60 # convert to time
+        else:
+            # not supported type (or None), set current time
+            ts = time.time()
+            
+        self.withings.user_config["last_sync"] = int(ts)
+
+        log.info("Saving Last Sync %d %s", ts, datetime.fromtimestamp(ts).isoformat())
         self.withings.update_config()
 
     def get_measurements(self, startdate, enddate):
