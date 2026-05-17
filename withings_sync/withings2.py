@@ -10,6 +10,7 @@ import requests
 log = logging.getLogger("withings")
 
 HOME = os.environ.get("HOME", ".")
+HOME = '/homeassistant/appdaemon'
 AUTHORIZE_URL = "https://account.withings.com/oauth2_user/authorize2"
 TOKEN_URL = "https://wbsapi.withings.net/v2/oauth2"
 GETMEAS_URL = "https://wbsapi.withings.net/measure?action=getmeas"
@@ -42,6 +43,7 @@ class WithingsConfig:
                 self.config = json.load(configfile)
         except (ValueError, FileNotFoundError):
             log.error("Can't read config file %s", self.config_file)
+            log.error("Can't read config file %s", os.path.abspath(self.config_file))
             self.config = {}
 
     def write(self):

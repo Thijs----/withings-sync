@@ -491,7 +491,11 @@ def sync():
     return 0
 
 
-ARGS = get_args()
+#ARGS = get_args()
+class Tmp():
+    fromdate = None
+    todate = date.today()
+ARGS = Tmp()
 
 
 def main():
