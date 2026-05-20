@@ -25,21 +25,22 @@ def load_variable(env_var, secrets_file):
     """Load a variable from an environment variable or from a secrets file"""
     # Try to read the value from the secrets file. Silently fail if the file
     # cannot be read and use an empty value
-    try:
-        with open(secrets_file, encoding='utf-8') as secret:
-            value = secret.read().strip("\n")
-    except OSError:
-        value = ""
+    #try:
+    with open(secrets_file, encoding='utf-8') as secret:
+        value = secret.read().strip("\n")
+    #except OSError:
+    #    value = ""
 
     # Load variable from environment if it exists, otherwise use the
     # value read from the secrets file.
     return os.getenv(env_var, value)
 
 
-GARMIN_USERNAME = load_variable('GARMIN_USERNAME', "/run/secrets/garmin_username")
-GARMIN_PASSWORD = load_variable('GARMIN_PASSWORD', "/run/secrets/garmin_password")
-TRAINERROAD_USERNAME = load_variable('TRAINERROAD_USERNAME', "/run/secrets/trainerroad_username")
-TRAINERROAD_PASSWORD = load_variable('TRAINERROAD_PASSWORD', "/run/secrets/trainerroad_password")
+HOME = '/homeassistant/appdaemon'
+GARMIN_USERNAME = load_variable('GARMIN_USERNAME', HOME + "/secrets/garmin_username")
+GARMIN_PASSWORD = load_variable('GARMIN_PASSWORD', HOME + "/secrets/garmin_password")
+TRAINERROAD_USERNAME = '' #load_variable('TRAINERROAD_USERNAME', HOME + "/secrets/trainerroad_username")
+TRAINERROAD_PASSWORD = '' #load_variable('TRAINERROAD_PASSWORD', HOME + "/secrets/trainerroad_password")
 
 
 
@@ -154,6 +155,7 @@ def get_args():
 def sync_garmin(fit_file):
     """Sync generated fit file to Garmin Connect"""
     garmin = GarminConnect()
+    #raise Exception('test %s %s'%(ARGS.garmin_username, ARGS.garmin_password))
     garmin.login(ARGS.garmin_username, ARGS.garmin_password)
     return garmin.upload_file(fit_file)
 
@@ -493,8 +495,18 @@ def sync():
 
 #ARGS = get_args()
 class Tmp():
+    garmin_username = GARMIN_USERNAME
+    garmin_password = GARMIN_PASSWORD
+    trainerroad_username = TRAINERROAD_USERNAME
+    trainerroad_password = TRAINERROAD_PASSWORD
     fromdate = None
     todate = date.today()
+    to_fit = False
+    to_json = False
+    output = None
+    no_upload = False
+    features = []
+    verbose = False
 ARGS = Tmp()
 
 
