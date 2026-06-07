@@ -10,7 +10,8 @@ garth.http.USER_AGENT = {"User-Agent": ("GCM-iOS-5.7.2.1")}
 
 log = logging.getLogger("garmin")
 
-HOME = os.getenv("HOME", ".")
+#HOME = os.getenv("HOME", ".")
+HOME = '/homeassistant/appdaemon'
 GARMIN_SESSION = os.getenv('GARMIN_SESSION', os.path.join(HOME, ".garmin_session"))
 
 

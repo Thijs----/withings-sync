@@ -155,7 +155,7 @@ def get_args():
 def sync_garmin(fit_file):
     """Sync generated fit file to Garmin Connect"""
     garmin = GarminConnect()
-    #raise Exception('test %s %s'%(ARGS.garmin_username, ARGS.garmin_password))
+    #raise Exception('test "%s" "%s"'%(ARGS.garmin_username, ARGS.garmin_password))
     garmin.login(ARGS.garmin_username, ARGS.garmin_password)
     return garmin.upload_file(fit_file)
 
@@ -421,7 +421,9 @@ def sync():
         startdate = withings.get_lastsync()
     else:
         startdate = int(time.mktime(ARGS.fromdate.timetuple()))
-
+    
+    if ARGS.todate is None:
+        ARGS.todate = date.today()
     enddate = int(time.mktime(ARGS.todate.timetuple())) + 86399
     logging.info(
         "Fetching measurements from %s to %s",
@@ -434,7 +436,10 @@ def sync():
 
     # Only upload if there are measurement returned
     if groups is None or len(groups) == 0:
-        logging.error("No measurements to upload for date or period specified")
+        logging.error("No measurements to upload for date or period specified (from %s to %s)",
+            time.strftime("%Y-%m-%d %H:%M", time.localtime(startdate)),
+            time.strftime("%Y-%m-%d %H:%M", time.localtime(enddate)),
+        )
         return -1
 
     last_measurement_type, last_date_time, syncdata = prepare_syncdata(height, groups)
@@ -500,7 +505,7 @@ class Tmp():
     trainerroad_username = TRAINERROAD_USERNAME
     trainerroad_password = TRAINERROAD_PASSWORD
     fromdate = None
-    todate = date.today()
+    todate = None
     to_fit = False
     to_json = False
     output = None
